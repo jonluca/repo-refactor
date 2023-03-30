@@ -1,0 +1,76 @@
+{
+  "name": "repo-refactor",
+  "version": "0.0.0-development",
+  "license": "MIT",
+  "author": "Jonluca DeCaro <reporefactor@jonlu.ca>",
+  "description": "Convert a directory into a different one of your choosing",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "main": "dist/index.js",
+  "bin": {
+    "semantic-release": "dist/index.js"
+  },
+  "keywords": [
+    "har",
+    "openapi",
+    "json",
+    "api",
+    "converter"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jonluca/repo-refactor.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jonluca/repo-refactor/issues"
+  },
+  "homepage": "https://github.com/jonluca/repo-refactor",
+  "scripts": {
+    "prepublishOnly": "yarn build",
+    "t-node": "node --experimental-specifier-resolution=node --no-warnings --loader ts-node/esm/transpile-only",
+    "lint": "eslint src",
+    "build": "rm -fr dist/* && tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit",
+    "run": "yarn t-node src/index.ts"
+  },
+  "dependencies": {
+    "@types/fs-extra": "^11.0.1",
+    "@types/yargs": "^17.0.24",
+    "fs-extra": "^11.1.1",
+    "glob": "^9.3.2",
+    "gpt3-tokenizer": "^1.1.5",
+    "lodash-es": "^4.17.21",
+    "mkdirp": "^2.1.6",
+    "openai": "^3.2.1",
+    "simple-git": "^3.17.0",
+    "yargs": "^17.7.1"
+  },
+  "devDependencies": {
+    "@types/eslint": "8.37.0",
+    "@types/lodash-es": "^4.17.7",
+    "@types/node": "^18.15.11",
+    "@typescript-eslint/eslint-plugin": "^5.57.0",
+    "@typescript-eslint/parser": "^5.57.0",
+    "eslint": "^8.37.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-unused-imports": "^2.0.0",
+    "lint-staged": "^13.2.0",
+    "prettier": "^2.8.7",
+    "typescript": "5.0.2"
+  },
+  "lint-staged": {
+    "**/*.{js,ts,jsx,tsx}": [
+      "eslint --cache --fix"
+    ],
+    "**/*.{js,ts,jsx,tsx,json,md}": [
+      "prettier --write"
+    ]
+  }
+}
