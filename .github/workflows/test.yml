@@ -31,10 +31,4 @@ jobs:
       - name: Set debug on windows
         if: matrix.os == 'windows-latest'
         run: set DEBUG=*
-
       - run: yarn build
-
-      - name: Coveralls
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
