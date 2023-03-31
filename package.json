@@ -12,14 +12,12 @@
   "module": "dist/index.js",
   "type": "module",
   "bin": {
-    "semantic-release": "dist/index.js"
+    "repo-refactor": "dist/index.js"
   },
   "keywords": [
-    "har",
-    "openapi",
-    "json",
+    "openai",
     "api",
-    "converter"
+    "refactor"
   ],
   "repository": {
     "type": "git",
