@@ -1,6 +1,7 @@
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 import { Refactor } from "./refactor";
+import { SUPPORTED_LANGUAGES } from "./lib/langs";
 
 export const args = yargs(hideBin(process.argv))
   .options({
@@ -24,11 +25,13 @@ export const args = yargs(hideBin(process.argv))
       describe: "Source language",
       type: "string",
       demandOption: true,
+      choices: SUPPORTED_LANGUAGES,
     },
     to: {
       describe: "Target language",
       type: "string",
       demandOption: true,
+      choices: SUPPORTED_LANGUAGES,
     },
   })
   .parseSync();

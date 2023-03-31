@@ -193,5 +193,5 @@ dist
 
 node_modules
 .idea
-test/**/jonluca.har
 coverage
+glob-fs-gitignore-ts/

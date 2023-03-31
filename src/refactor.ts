@@ -1,53 +1,67 @@
-import fs from "fs-extra";
-import glob from "glob";
-import { Configuration, OpenAIApi } from "openai";
 import { args } from "./index";
-
+import { OpenAIClient } from "./lib/openai";
+import { cloneRepo, isGitRepo, listFiles } from "./lib/git";
+import { LANGUAGE_EXTENSION_MAP } from "./lib/langs";
+import jetpack from "fs-jetpack";
+import logger from "./log";
+import pLimit from "p-limit";
 export class Refactor {
-  openai: OpenAIApi;
+  openaiClient: OpenAIClient = new OpenAIClient();
   opts: typeof args = args;
-  constructor() {
-    const configuration = new Configuration({
-      apiKey: this.opts.openaiApiKey,
-    });
-    this.openai = new OpenAIApi(configuration);
-  }
 
   refactor = async (): Promise<void> => {
-    const { dest: destDir, src: srcDir } = this.opts;
+    const { dest: destDir, src: src } = this.opts;
     // Create destination directory if it does not exist
-    if (!fs.existsSync(destDir)) {
-      fs.mkdirSync(destDir);
+    await jetpack.dirAsync(destDir);
+    let srcDir = src;
+
+    if (await isGitRepo(src)) {
+      logger.info("Detected git repository, cloning to temp directory...");
+      srcDir = await cloneRepo(src);
+      logger.info(`Cloned to temp directory: ${srcDir}`);
     }
 
     // Get all files in source directory with specified language extension
-    const files = glob.sync(`${srcDir}/**/*`);
+    const files = await listFiles(srcDir);
+    logger.info(`Found ${files.length} files in source directory`);
 
+    const validExtensions = LANGUAGE_EXTENSION_MAP[this.opts.from as keyof typeof LANGUAGE_EXTENSION_MAP];
+    const newExtension = LANGUAGE_EXTENSION_MAP[this.opts.to as keyof typeof LANGUAGE_EXTENSION_MAP][0];
     // Refactor each file
-    for (const file of files) {
-      const sourceCode = await fs.readFile(file, "utf-8");
-      // Convert AST into target language code
-      const convertedCode = await this.transformCode(sourceCode);
+    const fullSrcDir = jetpack.dir(srcDir);
+    const fullDestDir = jetpack.dir(destDir);
+    const limit = pLimit(10);
+    const promises = files.map((file) =>
+      limit(async () => {
+        logger.info(`Refactoring file: ${file}`);
+        const fullSourcePath = fullSrcDir.path(file);
+        let fullDestinationPath = fullDestDir.path(file);
+        const isSourceCodeFileOfTargetLang = validExtensions.find((ext) => file.endsWith(ext));
+        if (isSourceCodeFileOfTargetLang) {
+          const sourceCode = await jetpack.readAsync(fullSourcePath);
+          if (sourceCode) {
+            // Convert AST into target language code
+            const convertedCode = await this.openaiClient.transformCode(sourceCode, file);
 
-      if (convertedCode) {
-        // Write refactored code to destination file
-        const outputFile = file.replace(`${srcDir}/`, "").replace(from, to);
-        const outputPath = `${destDir}/${outputFile}`;
-        const outputDir = outputPath.substring(0, outputPath.lastIndexOf("/"));
-        if (!(await fs.exists(outputDir))) {
-          fs.mkdirSync(outputDir, { recursive: true });
+            if (convertedCode) {
+              // Write refactored code to destination file
+              const regexp = new RegExp(`\\.${isSourceCodeFileOfTargetLang}$`);
+              fullDestinationPath = fullDestDir.path(file.replace(regexp, `.${newExtension}`));
+              await jetpack.writeAsync(fullDestinationPath, convertedCode);
+              logger.info(`Wrote refactored code to ${fullDestinationPath}`);
+            }
+          } else {
+            logger.error(`Could not read file: ${file}`);
+          }
+        } else {
+          logger.info(`File ${file} is not a source code file of target language, copying directly`);
+          // otherwise, just copy the file directly
+          await jetpack.copyAsync(fullSourcePath, fullDestinationPath, { overwrite: true });
         }
-        await fs.writeFile(outputPath, convertedCode, "utf-8");
-      }
-    }
-  };
+      }),
+    );
+    await Promise.all(promises);
 
-  transformCode = async (sourceCode: string): Promise<string | undefined> => {
-    const completion = await this.openai.createCompletion({
-      model: "gpt-4",
-      prompt: sourceCode,
-    });
-    const text = completion.data.choices[0].text;
-    return text;
+    logger.info("Refactoring complete!");
   };
 }
