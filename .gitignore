@@ -192,6 +192,5 @@ dist
 
 
 node_modules
-.idea
 coverage
 glob-fs-gitignore-ts/
