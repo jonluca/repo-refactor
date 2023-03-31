@@ -194,3 +194,4 @@ dist
 node_modules
 coverage
 glob-fs-gitignore-ts/
+imessage-exporter

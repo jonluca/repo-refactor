@@ -1,18 +1,18 @@
 import { Configuration, OpenAIApi } from "openai";
 import { args } from "../index";
-import Tokenizer from "gpt4-tokenizer";
-
+import { GPT4Tokenizer } from "gpt4-tokenizer";
+import axios from "axios";
 export class OpenAIClient {
   openai: OpenAIApi;
   opts: typeof args = args;
-  encoder: Tokenizer;
+  encoder: GPT4Tokenizer;
 
   constructor() {
     const configuration = new Configuration({
       apiKey: this.opts.openaiApiKey,
     });
     this.openai = new OpenAIApi(configuration);
-    this.encoder = new Tokenizer({ type: "gpt3" }); // or 'codex'
+    this.encoder = new GPT4Tokenizer({ type: "gpt3" }); // or 'codex'
   }
 
   private getInitialPromptForFile = (path: string): string => {
@@ -40,7 +40,13 @@ export class OpenAIClient {
       }
       return sourceCode;
     } catch (e) {
-      console.error(e);
+      if (axios.isAxiosError(e)) {
+        // axios error logger
+        console.error(e.response?.status);
+        console.error(e.response?.data);
+      } else {
+        console.error(e);
+      }
       return null;
     }
   };
@@ -58,9 +64,8 @@ export class OpenAIClient {
           ? "The following is the contents of the file:"
           : "The following is a partial file, with the start or end omitted. Ignore any syntax errors, and convert the code exactly as is:";
       const prompt = `${initialPrompt}
-    ${subPrompt}\n\n
-    ${sourceCode}`;
-      const completion = await this.runCompletion(`${prompt}\n\n${textChunk}`);
+    ${subPrompt}\n\n${textChunk}`;
+      const completion = await this.runCompletion(prompt);
       fullSource += completion;
     }
     return fullSource;

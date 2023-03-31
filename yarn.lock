@@ -385,6 +385,11 @@ ansi-styles@^6.0.0:
   resolved "https://registry.npmjs.org/ansi-styles/-/ansi-styles-6.2.1.tgz#0e62320cf99c21afff3b3012192546aacbfb05c5"
   integrity sha512-bN798gFfQX+viw3R7yrGWRqnrN2oRkEkUjjl4JNn4E8GxxbjtG3FbrEIIY3l8/hrwUwIeCZvi4QuOTP4MErVug==
 
+antlr4ts@^0.5.0-alpha.4:
+  version "0.5.0-alpha.4"
+  resolved "https://registry.npmjs.org/antlr4ts/-/antlr4ts-0.5.0-alpha.4.tgz#71702865a87478ed0b40c0709f422cf14d51652a"
+  integrity sha512-WPQDt1B74OfPv/IMS2ekXAKkTZIHl88uMetg6q3OTqgFxZ/dxDXI0EWLyZid/1Pe6hTftyg5N7gel5wNAGxXyQ==
+
 arg@^4.1.0:
   version "4.1.3"
   resolved "https://registry.npmjs.org/arg/-/arg-4.1.3.tgz#269fc7ad5b8e42cb63c896d5666017261c144089"
@@ -1207,10 +1212,10 @@ gopd@^1.0.1:
   dependencies:
     get-intrinsic "^1.1.3"
 
-gpt4-tokenizer@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/gpt4-tokenizer/-/gpt4-tokenizer-1.0.0.tgz#f56ab3f6a7608ababa80b07eb6e84b267eabde0e"
-  integrity sha512-BJptK4RB1J3OJ1vCr+YppagPDWIXMANjLl6gBF4RpjvzMD8OgaMQdb/bngMjoGKDANnAL5FgFmz03pvqZTxLFA==
+gpt4-tokenizer@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.npmjs.org/gpt4-tokenizer/-/gpt4-tokenizer-1.1.0.tgz#ca83afe671af4626d7b55940fca5652ebac5c732"
+  integrity sha512-BEft81+0RaCvvb3dELLxbrStZj70DrHVUvvZcbbr7EWfWxTPu8OaUQmQuhbobuGfin5iT36e517DopZD4uZdCQ==
   dependencies:
     array-keyed-map "^2.1.3"
 
@@ -2245,10 +2250,10 @@ typed-array-length@^1.0.4:
     for-each "^0.3.3"
     is-typed-array "^1.1.9"
 
-typescript@5.0.2:
-  version "5.0.2"
-  resolved "https://registry.npmjs.org/typescript/-/typescript-5.0.2.tgz#891e1a90c5189d8506af64b9ef929fca99ba1ee5"
-  integrity sha512-wVORMBGO/FAs/++blGNeAVdbNKtIh1rbBL2EyQ1+J9lClJ93KiiKe8PmFIVdXhHcyv44SL9oglmfeSsndo0jRw==
+typescript@5.0.3:
+  version "5.0.3"
+  resolved "https://registry.npmjs.org/typescript/-/typescript-5.0.3.tgz#fe976f0c826a88d0a382007681cbb2da44afdedf"
+  integrity sha512-xv8mOEDnigb/tN9PSMTwSEqAnUvkoXMQlicOb0IUVDBSQCgBSaAAROUZYy2IcUy5qU6XajK5jjjO7TMWqBTKZA==
 
 unbox-primitive@^1.0.2:
   version "1.0.2"
