@@ -16,7 +16,7 @@ export class OpenAIClient {
   }
 
   private getInitialPromptForFile = (path: string): string => {
-    return `You are a senior software engineer who is trying to refactor a project from ${args.from} to ${args.to}. You are working on the file at path ${path}. Do not reply with ANYTHING besides the source code in the new language. Make SURE the syntax is correct, and the new code matches the functionality of the source code exactly. Write the code in a modern, functional, clean manner. Do NOT include any markdown syntax. Do NOT include any explanations, or any other text besides the source code.`;
+    return `You are a senior software engineer who is trying to refactor a project from ${args.from} to ${args.to}. You are working on the file at path ${path}. Do not reply with ANYTHING besides the source code in the new language. Make SURE the syntax is correct, and the new code matches the functionality of the source code exactly. Write the code in a modern, functional, clean manner. Do NOT include any markdown syntax. Do NOT include any explanations, or any other text besides the source code. If a specific feature does not exist in the target language, don't include it and include a comment explaining why. If you are not sure how to refactor a specific part, just leave it as is. \n\n`;
   };
 
   private checkPromptLength = (prompt: string): number => {
