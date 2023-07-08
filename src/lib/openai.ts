@@ -58,13 +58,13 @@ export class OpenAIClient {
       // we need to split it up - in the future lets do this more intelligently
     }
     let fullSource = "";
-    for (const textChunk of chunked) {
+    for (const chunk of chunked) {
       const subPrompt =
         chunked.length === 1
           ? "The following is the contents of the file:"
           : "The following is a partial file, with the start or end omitted. Ignore any syntax errors, and convert the code exactly as is:";
       const prompt = `${initialPrompt}
-    ${subPrompt}\n\n${textChunk}`;
+    ${subPrompt}\n\n${chunk.text}`;
       const completion = await this.runCompletion(prompt);
       fullSource += completion;
     }
