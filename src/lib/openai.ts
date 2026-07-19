@@ -1,7 +1,12 @@
 import { Configuration, OpenAIApi } from "openai";
-import { args } from "../index";
+import { args } from "../args.js";
 import { GPT4Tokenizer } from "gpt4-tokenizer";
-import axios from "axios";
+
+export const unwrapCodeFence = (sourceCode: string) => {
+  const fencedSource = sourceCode.match(/^```[^\r\n]*\r?\n([\s\S]*?)\r?\n```[ \t]*(?:\r?\n)?$/);
+  return fencedSource ? fencedSource[1] : sourceCode;
+};
+
 export class OpenAIClient {
   openai: OpenAIApi;
   opts: typeof args = args;
@@ -35,15 +40,13 @@ export class OpenAIClient {
       if (!sourceCode) {
         return undefined;
       }
-      if (sourceCode.startsWith("```")) {
-        return sourceCode.split("\n").slice(1, -1).join("\n");
-      }
-      return sourceCode;
+      return unwrapCodeFence(sourceCode);
     } catch (e) {
-      if (axios.isAxiosError(e)) {
+      if (typeof e === "object" && e !== null && "isAxiosError" in e) {
+        const response = (e as { response?: { status?: number; data?: unknown } }).response;
         // axios error logger
-        console.error(e.response?.status);
-        console.error(e.response?.data);
+        console.error(response?.status);
+        console.error(response?.data);
       } else {
         console.error(e);
       }

@@ -3,6 +3,7 @@ import type { SimpleGit, SimpleGitOptions } from "simple-git";
 import { simpleGit } from "simple-git";
 import jetpack from "fs-jetpack";
 import walk from "ignore-walk";
+import { resolve } from "node:path";
 
 export const isGitRepo = async (path: string) => {
   try {
@@ -33,7 +34,16 @@ export const listFiles = async (path: string) => {
   });
 
   // ignore-walk doesn't ignore .git for some reason
-  return files.filter((l) => !l.startsWith(".git"));
+  return files.filter((file) => file !== ".git" && !file.startsWith(".git/"));
+};
+
+export const normalizeCloneSource = (repo: string) => {
+  try {
+    new URL(repo);
+    return repo;
+  } catch {
+    return repo.startsWith("git@") ? repo : resolve(repo);
+  }
 };
 
 export const cloneRepo = async (repo: string): Promise<string> => {
@@ -50,7 +60,7 @@ export const cloneRepo = async (repo: string): Promise<string> => {
   // when setting all options in a single object
   const git: SimpleGit = simpleGit(options);
 
-  const dir = await git.clone(repo, baseDir, { "--depth": "1" });
+  await git.clone(normalizeCloneSource(repo), baseDir, { "--depth": "1" });
 
   return baseDir;
 };
